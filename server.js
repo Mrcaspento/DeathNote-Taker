@@ -4,27 +4,29 @@ const fs = require("fs");
 
 const app = express();
 
-const mainDir = path.join(__dirname, "/public");
+var PORT = process.env.PORT || 3000; 
+
+const StickySock = path.join(__dirname, "/public/assets");
 
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 app.get("/notes", function(req, res) {
-    res.sendFile(path.join(mainDir, "notes.html"));
+    res.sendFile(path.join(StickySock, "notes.html"));
 });
 
 app.get("/api/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "/db/db.json"));
+    res.sendFile(path.join(__dirname, "/Develop/db/db.json"));
 });
 
 app.get("/api/notes/:id", function(req, res) {
-    let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+    let savedNotes = JSON.parse(fs.readFileSync("./Develop/db/db.json", "utf8"));
     res.json(savedNotes[Number(req.params.id)]);
 });
 
 app.get("*", function(req, res) {
-    res.sendFile(path.join(mainDir, "index.html"));
+    res.sendFile(path.join(StickySock, "index.html"));
 });
 
 app.post("/api/notes", function(req, res) {
