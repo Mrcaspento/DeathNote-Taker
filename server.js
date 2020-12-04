@@ -6,43 +6,48 @@ const app = express();
 
 var PORT = process.env.PORT || 3000; 
 
-const StickySock = path.join(__dirname, "/public/assets");
-
+const stickySock = path.join(__dirname, "/public/assets");
+const wetSock = path.join(__dirname, "/Develop/db");
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 app.get("/notes", function(req, res) {
-    res.sendFile(path.join(StickySock, "notes.html"));
-});
-
-app.get("/api/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "/Develop/db/db.json"));
-});
-
-app.get("/api/notes/:id", function(req, res) {
-    let savedNotes = JSON.parse(fs.readFileSync("./Develop/db/db.json", "utf8"));
-    res.json(savedNotes[Number(req.params.id)]);
+    res.sendFile(path.join(stickySock, "notes.html"));
 });
 
 app.get("*", function(req, res) {
-    res.sendFile(path.join(StickySock, "index.html"));
+    res.sendFile(path.join(stickySock, "index.html"));
 });
 
+
+app.get("/api/notes", function(req, res) {
+    res.sendFile(path.join(wetSock, "db.json"));
+});
+
+
+
+app.get("/api/notes/:id", function(req, res) {
+    let savedNotes = JSON.parse(fs.readFileSync(wetSock,"db.json", "utf8"));
+    res.json(savedNotes[Number(req.params.id)]);
+});
+
+
+
 app.post("/api/notes", function(req, res) {
-    let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+    let savedNotes = JSON.parse(fs.readFileSync("Devlop/db/db.json", "utf8"));
     let newNote = req.body;
     let uniqueID = (savedNotes.length).toString();
     newNote.id = uniqueID;
     savedNotes.push(newNote);
 
-    fs.writeFileSync("/Develop/db/db.json", JSON.stringify(savedNotes));
+    fs.writeFileSync(wetSock,"db.json", JSON.stringify(savedNotes));
     console.log("Note saved to db.json. Content: ", newNote);
     res.json(savedNotes);
 })
 
 app.delete("/api/notes/:id", function(req, res) {
-    let savedNotes = JSON.parse(fs.readFileSync("/Develop/db/db.json", "utf8"));
+    let savedNotes = JSON.parse(fs.readFileSync(wetSock,"db.json", "utf8"));
     let noteID = req.params.id;
     let newID = 0;
     console.log(`Deleting note with ID ${noteID}`);
@@ -55,7 +60,7 @@ app.delete("/api/notes/:id", function(req, res) {
         newID++;
     }
 
-    fs.writeFileSync("/Develop/db/db.json", JSON.stringify(savedNotes));
+    fs.writeFileSync(wetSock,"db.json", JSON.stringify(savedNotes));
     res.json(savedNotes);
 })
 
