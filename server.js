@@ -41,11 +41,6 @@ app.post("/api/notes", function(req, res){
     }
     res.json(newTable);
 })
-//uniquie id script
-var noteid = Math.random() // 0.9394456857981651
-noteid.toString(36); 
-var id = noteid.toString(36).substr(2, 9); 
-id.length >= 9;
 
 
 
