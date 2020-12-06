@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 const uuid =require("uuid")
-const { dirname } = require('path');
+
 const app = express();
 const stickySock = path.join(__dirname, "/public")
 var PORT = process.env.PORT || 3000; 
@@ -25,11 +25,11 @@ app.get("*", function(req, res) {
 });
 
 app.get("/api/notes", function(req, res) {
-  notes = JSON.parse(fs.readFileSync("db/db.json"));
+  notes = JSON.parse(fs.readFileSync("../db/db.json"));
   res.json(notes);
 });
 app.get("/api/notes/:id", function(req, res) {
-  let savedNotes = JSON.parse(fs.readFileSync("/db/db.json", "utf8"));
+  let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
   res.json(savedNotes[Number(req.params.id)]);
 });
 
