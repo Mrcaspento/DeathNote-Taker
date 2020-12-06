@@ -16,23 +16,21 @@ app.use(express.json());
 let notes = [];
 //routes
 app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "public/index.html"));
+  res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
 app.get("/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "public/notes.html"));
+  res.sendFile(path.join(__dirname, "public/notes.html"));
 });
-
+//anything not designated routed to index.html
 app.get("*", function(req, res) {
-    res.sendFile(path.join(__dirname, "public/index.html"));
+  res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 app.get("/api/notes", function(req, res) {
-    notes = JSON.parse(fs.readFileSync("db/db.json"));
-    res.json(notes);
+  notes = JSON.parse(fs.readFileSync("db/db.json"));
+  res.json(notes);
 });
-
-
 
 app.post("/api/notes", function(req, res) {
     let newNote = {
