@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const Store = require('./db/store')
+const uui =require("uuid")
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 let notes = [];
-
+//routes
 app.get("/", function(req, res) {
     res.sendFile(path.join(__dirname, "public/index.html"));
 });
@@ -31,6 +31,8 @@ app.get("/api/notes", function(req, res) {
     notes = JSON.parse(fs.readFileSync("db/db.json"));
     res.json(notes);
 });
+
+
 
 app.post("/api/notes", function(req, res) {
     let newNote = {
