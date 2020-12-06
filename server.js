@@ -20,7 +20,7 @@ app.get("/", function(req, res) {
 });
 
 app.get("/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "public/notes.html"));
+    res.sendFile(path.join(__dirname, "public/notes"));
 });
 
 app.get("*", function(req, res) {
@@ -45,7 +45,7 @@ app.post("/api/notes", function(req, res) {
     fs.writeFileSync("db/db.json", JSON.stringify(notes));
     res.json(newNote);
 })
-//delete entry from API notes using unique ID
+
 app.delete("/api/notes/:id", function(req, res) {
     res.json(notes.filter(note => note.id !== parseInt(req.params.id)));
 })
