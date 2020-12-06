@@ -7,62 +7,50 @@ const app = express();
 
 var PORT = process.env.PORT || 3000; 
 //shortcut keys for routing
-const stickySock = path.join(__dirname, "./public");
-const wetSock = path.join(__dirname, "./Develop/db");
 
+
+app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-const saveNotes = [];
-//basic route that sends teh user first to the AJAX page
-app.get("/notes", function(req, res) {
-    res.sendFile(path.join(stickySock, "/notes.html"))
-});
+let notes = [];
+
 app.get("/", function(req, res) {
-    res.sendFile(path.join(stickySock, "/index.html"));
+    res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
+app.get("/notes", function(req, res) {
+    res.sendFile(path.join(__dirname, "public/notes.html"));
+});
 
+app.get("*", function(req, res) {
+    res.sendFile(path.join(__dirname, "public/index.html"));
+});
 
-
-
-// we goin to use the classy boi Store to do the db manipulation
-//display notes  and store
 app.get("/api/notes", function(req, res) {
-    Store.getNotes().then(function(notes) {
-      // send that sweet data in json format back to the front end guys who made this ajax call
-      res.json(notes)
-    }).catch(function(err){
-      // watching for errors bc we paranoid.... THEY'RE IN THE TREES!!lo!l
-      res.status(500).json(err)
-    })
+    notes = JSON.parse(fs.readFileSync("db/db.json"));
+    res.json(notes);
 });
 
-app.get("/api/notes/:id", function(req, res) {
-    let  = JSON.parse(fs.readFileSync(wetSock,"/db.json", "utf8"));
-    res.json([Number(req.params.id)]);
-});
-app.post("/api/notes", function(req, res){
-    var newTable = req.body;
-  console.log(newTable)
-    if(tableList.length < 5){
-
-      tableList.push(newTable)
-    }else{
-      waitList.push(newTable)
+app.post("/api/notes", function(req, res) {
+    let newNote = {
+        title: req.body.title,
+        text: req.body.text,
+        id: uuid.v4()
     }
-    res.json(newTable);
+    console.log(newNote);
+    notes.push(newNote);
+    fs.writeFileSync("db/db.json", JSON.stringify(notes));
+    res.json(newNote);
 })
-
-
-
-app.post("app/clear", function(req,res){
-    tableData.splice(0);
-    waitlistData.length = 0;
-    res.json({ok: true});
+//delete entry from API notes using unique ID
+app.delete("/api/notes/:id", function(req, res) {
+    res.json(notes.filter(note => note.id !== parseInt(req.params.id)));
 })
-  app.listen(PORT, function() {
-    console.log("server listening " + PORT);
-  });
+//listener for port
+app.listen(PORT, () => {
+    console.log("App listening at http://localhost:" + PORT);
+});
+
+module.exports = notes;
   
-

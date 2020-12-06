@@ -6,7 +6,7 @@ html, body {
 }
 
 .save-note {
-  color:white;
+  display: none;
 }
 
 .icons i {
@@ -39,9 +39,6 @@ html, body {
   color: #757575;
 }
 
-.note-journal,.note-text {
-  resize: none;
-}
 .list-container .card {
   height: calc(100vh - 70px);
   border-bottom: none;
